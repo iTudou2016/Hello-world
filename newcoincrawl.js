@@ -11,7 +11,7 @@ var c = new Crawler({
             // $ is Cheerio by default
             //a lean implementation of core jQuery designed specifically for the server
             $("[id^='msg_4']").each(function(i, e) {
-	if(!/ICO|POS|AIRDROP|WHITELIST/i.test($(e).text())) {
+	if(/POW/i.test($(e).text())||!/ICO|POS|AIRDROP|WHITELIST/i.test($(e).text())) {
 	        console.log($(e).attr('id').replace("msg_", ""));
 	        console.log($(e).text());
   	        console.log($(e).find('a').attr('href'));
