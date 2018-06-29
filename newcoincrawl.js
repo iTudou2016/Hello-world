@@ -18,3 +18,4 @@ var c = new Crawler({
 
 // Queue just one URL, with default callback
 c.queue('https://bitcointalk.org/index.php?board=159.0');
+//c.queue(['https://bitcointalk.org/index.php?board=159.0','https://bitcointalk.org/index.php?board=159.40','https://bitcointalk.org/index.php?board=159.80','https://bitcointalk.org/index.php?board=159.120']);
