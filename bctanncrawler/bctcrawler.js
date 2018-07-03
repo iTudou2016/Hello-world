@@ -40,16 +40,16 @@ var c = new Crawler({
             var $ = res.$;
             // $ is Cheerio by default
             //a lean implementation of core jQuery designed specifically for the server
-            $("[id^='msg_4']").each(function(i, e) {
-	if(/POW/i.test($(e).text())||!/ICO|POS|AIRDROP|WHITELIST/i.test($(e).text())) {
-	        console.log($(e).attr('id').replace("msg_", ""));
-	        console.log($(e).text());
-  	        console.log($(e).find('a').attr('href'));
+            $("[id^='msg_41']").each(function(i, e) {
+	var ann_msgID = $(e).attr('id').replace("msg_", "");
+	var ann_title = $(e).text();
+	var ann_href = $(e).find('a').attr('href');
+	if((/POW/i.test(ann_title)||!/ICO|POS|AIRDROP|WHITELIST|SALE/i.test(ann_title))&&Number(ann_href.slice(40, -2))>4556000 ) {
 	         // 向数组插入数据
 	         bctannData.push({
-		ann_msgID: $(e).attr('id').replace("msg_", ""),
-		ann_title : $(e).text(),
-		ann_href : $(e).find('a').attr('href'),
+		ann_msgID: ann_msgID + "//" + ann_href.slice(40, -2),
+		ann_title : ann_title,
+		ann_href : ann_href,
 	          });
 	}
              });
@@ -57,12 +57,11 @@ var c = new Crawler({
         done();
     }
 });
-c.queue(['https://bitcointalk.org/index.php?board=159.0','https://bitcointalk.org/index.php?
-
-board=159.40','https://bitcointalk.org/index.php?board=159.80','https://bitcointalk.org/index.php?board=159.120']);
+console.log(new Date().toLocaleTimeString() + ": Crawler work started.");
+c.queue(['https://bitcointalk.org/index.php?board=159.0','https://bitcointalk.org/index.php?board=159.40','https://bitcointalk.org/index.php?board=159.80','https://bitcointalk.org/index.php?board=159.120','https://bitcointalk.org/index.php?board=159.160']);
 c.on('drain',function(){
     // 异步数据处理
-   console.log("Crawler work done!");
+   console.log(new Date().toLocaleTimeString() + ": Crawler work done. " + bctannData.length + " links crawled!");
    svrres.render('index', {title: 'BctANN list', message: bctannData});
 });
 }
