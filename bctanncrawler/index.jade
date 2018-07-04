@@ -15,6 +15,7 @@ html
     div(id="mytimer")
     script(type="text/javascript")
         |setInterval(function() {document.getElementById("mytimer").innerHTML=new Date().toLocaleTimeString();},1000);
-    for item in message
-      p 
-        a(target= "_blank" href="#{item.ann_href}")       #{item.ann_msgID}  :   #{item.ann_title}
+    ul
+      for item in message      
+          li
+             a(target= "_blank" href="#{item.ann_href}")       #{item.ann_msgID}  :   #{item.ann_title}
