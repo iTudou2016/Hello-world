@@ -15,6 +15,7 @@ html
     div(id="mytimer")
     script(type="text/javascript")
         |setInterval(function() {document.getElementById("mytimer").innerHTML=new Date().toLocaleTimeString();},1000);
+    p(id="status")
     ul
       for item in message      
           li
