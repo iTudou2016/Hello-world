@@ -11,13 +11,15 @@ app.set('views','.');
 app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
- res.render('index', {title: 'BctANN list', message: ''});
+ res.render('index', {title: 'BCT ANN list', message: ''});
 });
 
 // POST method route
 app.post('/', function (req, res) {
   fetchannData(res);
 });
+//每隔10分钟刷新一次
+setInterval(fetchannData(res),600000);
 
 var server = app.listen(8080, function () {
 var host = server.address().address;
@@ -68,6 +70,6 @@ c.on('drain',function(){
     // 异步数据处理
    process.stdout.write("\n");
    console.log(new Date().toLocaleTimeString() + ": Crawler work done. " + bctannData.length + " links crawled!");
-   svrres.render('index', {title: 'BctANN list', message: bctannData});
+   svrres.render('index', {title: 'BCT ANN list', message: bctannData});
 });
 }
