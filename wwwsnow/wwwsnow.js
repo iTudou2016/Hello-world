@@ -11,7 +11,6 @@ app.set('views','.');
 app.set('view engine', 'jade');
 
 app.get('/', function(req, res) {
- //res.render('index', {title: 'SnowBlossom Pool', message: ''});
 getShare(res);
 });
 
@@ -20,7 +19,7 @@ app.post('/', function (req, res) {
 
 });
 
-var server = app.listen(8080, function () {
+var server = app.listen(80, function () {
 var host = server.address().address;
 var port = server.address().port;
   console.log('SnowBlossom Pool listening at http://%s:%s', host, port);
