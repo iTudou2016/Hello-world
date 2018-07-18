@@ -1,0 +1,87 @@
+﻿doctype html
+html
+  head
+    meta(charset='utf-8' name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1")
+    meta(http-equiv="refresh" content="10")
+    link(href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet")
+    link(href="//cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet")
+    link(href="//www.cnpool.vip/themes/default.css" rel="stylesheet")
+    title!=title
+    style(type="text/css").
+      h2 {color:red;}
+  body
+    div(id="wrapper")
+       div(id="page-wrapper")
+         h1  SnowBlossom Pool 
+         div
+           span 当前时间: 
+           span("id=currenttime") 
+         div
+           span 更新时间:  #{share.lastreport}
+         script(type="text/javascript")
+             |setInterval(function() {document.getElementById("currenttime").innerHTML=new Date().toLocaleTimeString() ;},1000);
+         div(id="page")
+           div(id="poolStats" class="row")
+             div(class="col-lg-4 col-sm-4")
+               div(class="infoBox hoverExpandEffect")
+                 div(class="icon")
+                   span(class="fa fa-dashboard") 
+                 div(class="content")
+                   div(class="text")
+                     span 矿池算力
+                   div(class="value")
+                     span #{report.poolhash}
+             div(class="col-lg-4 col-sm-4")
+               div(class="infoBox hoverExpandEffect")
+                 div(class="icon")
+                   span(class="fa fa-cubes") 
+                 div(class="content")
+                   div(class="text")
+                     span 已发现区块
+                   div(class="value")
+                     span N/A
+             div(class="col-lg-4 col-sm-4")
+               div(class="infoBox hoverExpandEffect")
+                 div(class="icon")
+                   span(class="fa fa-unlock-alt") 
+                 div(class="content")
+                   div(class="text")
+                     span 难度
+                   div(class="value")
+                     span N/A
+             div(class="col-lg-4 col-sm-4")
+               div(class="infoBox hoverExpandEffect")
+                 div(class="icon")
+                   span(class="fa fa-dashboard") 
+                 div(class="content")
+                   div(class="text")
+                     span 全网算力
+                   div(class="value")
+                     span N/A
+             div(class="col-lg-4 col-sm-4")
+               div(class="infoBox hoverExpandEffect")
+                 div(class="icon")
+                   span(class="fa fa-bars") 
+                 div(class="content")
+                   div(class="text")
+                     span 区块高度
+                   div(class="value")
+                     span N/A
+             div(class="col-lg-4 col-sm-4")
+               div(class="infoBox hoverExpandEffect")
+                 div(class="icon")
+                   span(class="fa fa-dashboard") 
+                 div(class="content")
+                   div(class="text")
+                     span 雪地狂欢
+                   div(class="value")
+                     span N/A
+  
+         p 矿工列表：   
+         ul
+           for item in report.miners      
+               li "#{item.account} : #{item.hashrate}"
+         p 矿工份额：   
+         ul
+           for item in share.miners      
+               li "#{item.account} : #{item.shares}"
