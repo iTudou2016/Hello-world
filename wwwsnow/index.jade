@@ -1,11 +1,11 @@
-﻿doctype html
+doctype html
 html
   head
     meta(charset='utf-8' name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1")
     meta(http-equiv="refresh" content="10")
     link(href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet")
     link(href="//cdn.bootcss.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet")
-    link(href="//www.cnpool.vip/themes/default.css" rel="stylesheet")
+    link(href="/css/default.css" rel="stylesheet")
     title!=title
     style(type="text/css").
       h2 {color:red;}
@@ -76,6 +76,7 @@ html
                      span 雪地狂欢
                    div(class="value")
                      span N/A
+         p 活跃矿工列表： 
          div(class="card push-up-10")
            div(id="paymentsReport" class="table-responsive")
              table(class="table table-hover table-striped")
@@ -85,13 +86,26 @@ html
                          span 矿工
                      th(class="col2")
                          span 算力
-               tbody(id="paymentsReport_rows")
-  
-         p 矿工列表：   
-         ul
-           for item in report.miners      
-               li "#{item.account} : #{item.hashrate}"
+                  for item in report.miners                     
+                     tr
+                        td(class="col1")
+                           span #{item.account}
+                        td(class="col2")
+                           span #{item.hashrate}
+         p
          p 矿工份额：   
-         ul
-           for item in share.miners      
-               li "#{item.account} : #{item.shares}"
+         div(class="card push-up-10")
+           div(id="paymentsReport" class="table-responsive")
+             table(class="table table-hover table-striped")
+                thead
+                  tr
+                     th(class="col1")
+                         span 矿工
+                     th(class="col2")
+                         span 算力
+                  for item in share.miners                     
+                     tr
+                        td(class="col1")
+                           span #{item.account}
+                        td(class="col2")
+                           span #{item.shares}
