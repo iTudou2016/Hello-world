@@ -1,40 +1,41 @@
-  private void loop()
-    throws Exception
+  private void countFound(NodeStatus ns, TreeMap<Integer, VoteCount> vote_map, TreeMap<String, Integer> pool_count)
   {
-    while (true)
+
+    if (ns.getHeadSummary().getHeader().getBlockHeight() < LOOK_BACK) return;
+    ChainHash prev = new ChainHash(ns.getHeadSummary().getHeader().getSnowHash());
+    int blocks = 0;
+
+    while(blocks < LOOK_BACK)
     {
-      Thread.sleep(30000);
-      saveNodeState();
-      }  
+      ChainHash h = prev;
+      CoinbaseExtras extras = null;
+      if ((!prev_map.containsKey(h)) || (!extra_map.containsKey(h)))
+      {
+        logger.log(Level.FINE, "Fetching block for vote: " + h);
+        Block blk = shackleton.getStub().getBlock(RequestBlock.newBuilder().setBlockHash(h.getBytes()).build());
+
+        extras = TransactionUtil.getInner(blk.getTransactions(0)).getCoinbaseExtras();
+
+        prev = new ChainHash(blk.getHeader().getPrevBlockHash());
+        prev_map.put(h, prev);
+        extra_map.put(h, extras);
+      }
+      else
+      {
+        extras = extra_map.get(h);
+        prev = prev_map.get(h);
+      }
+      
+      updateVoteMap(vote_map, extras);
+      String remark = HexUtil.getSafeString(extras.getRemarks());
+      if (!pool_count.containsKey(remark))
+      {
+        pool_count.put(remark, 0);
+      }
+      pool_count.put(remark, pool_count.get(remark) + 1);
+
+
+      blocks++;
     }
 
-  public synchronized void saveNodeState()
-  {
-    try
-    {
-      PrintStream out = new PrintStream(new AtomicFileOutputStream( "nodestate.json" ));
-      NetworkParams params = shackleton.getParams();
-      NodeStatus node_status = shackleton.getStub().getNodeStatus(QueryUtil.nr());
-      BlockSummary summary = node_status.getHeadSummary();
-      BlockHeader header = summary.getHeader();
-      SnowFieldInfo sf = params.getSnowFieldInfo(summary.getActivatedField());
-      out.println(String.format("{\n\"snowfield\": \"%s %s\",", summary.getActivatedField(), sf.getName()));
-      out.println(String.format("\"blockheight\": \"%s\",", header.getBlockHeight()));
-
-      double avg_diff = PowUtil.getDiffForTarget(BlockchainUtil.readInteger(summary.getTargetAverage()));
-      double target_diff = PowUtil.getDiffForTarget(BlockchainUtil.targetBytesToBigInteger(header.getTarget()));
-      double block_time_sec = summary.getBlocktimeAverageMs() / 1000.0 ;
-      double estimated_hash = Math.pow(2.0, target_diff) / block_time_sec / 1e6;
-      DecimalFormat df =new DecimalFormat("0.000");
-
-      out.println(String.format("\"difficulty\": \"%s (%s)\",", df.format(target_diff), df.format(avg_diff)));
-      out.println(String.format("\"networkhash\": \"%s Mh/s\"", df.format(estimated_hash)));
-      out.println("\n}");
-      out.flush();
-      out.close();
-    }
-    catch(Exception e)
-    {
-      logger.log(Level.WARNING, "Error writing report: " + e.toString());
-    }
   }
