@@ -1,7 +1,12 @@
-  private void countFound(NodeStatus ns, TreeMap<Integer, VoteCount> vote_map, TreeMap<String, Integer> pool_count)
+  public static final int LOOK_BACK=1000;
+
+  LRUCache<ChainHash, CoinbaseExtras> extra_map=new LRUCache<>(2000);
+  LRUCache<ChainHash, ChainHash> prev_map=new LRUCache<>(2000);
+
+private void countFound(NodeStatus ns, String remark, TreeMap<String, Integer> blockfound)
   {
 
-    if (ns.getHeadSummary().getHeader().getBlockHeight() < LOOK_BACK) return;
+    //if (ns.getHeadSummary().getHeader().getBlockHeight() < LOOK_BACK) return;
     ChainHash prev = new ChainHash(ns.getHeadSummary().getHeader().getSnowHash());
     int blocks = 0;
 
