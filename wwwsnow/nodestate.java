@@ -17,3 +17,9 @@ private void countFound(NodeStatus ns, UserServiceBlockingStub blockingStub, Str
       blocks++;
     }
   }
+      out.println("\"blockfound\": [");
+      for(Map.Entry<String, Integer> me : blockfound.entrySet())
+      {
+          out.println(String.format("{\"account\":\"%s\", \"blockNum\":\"%s\"},", me.getKey(), me.getValue()));
+      }
+      out.println("{\"account\":\"hi\",\"blockNum\":\"hi\"}\n],");
