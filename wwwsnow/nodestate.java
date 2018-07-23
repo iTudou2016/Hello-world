@@ -1,46 +1,19 @@
-  public static final int LOOK_BACK=1000;
-
-  LRUCache<ChainHash, CoinbaseExtras> extra_map=new LRUCache<>(2000);
-  LRUCache<ChainHash, ChainHash> prev_map=new LRUCache<>(2000);
-
-private void countFound(NodeStatus ns, String remark, TreeMap<String, Integer> blockfound)
+public static final int LOOK_BACK=1000;
+private void countFound(NodeStatus ns, UserServiceBlockingStub blockingStub, String remark, TreeMap<String, Integer> blockfound)
   {
-
-    //if (ns.getHeadSummary().getHeader().getBlockHeight() < LOOK_BACK) return;
-    ChainHash prev = new ChainHash(ns.getHeadSummary().getHeader().getSnowHash());
+    if (ns.getHeadSummary().getHeader().getBlockHeight() < LOOK_BACK) return;
     int blocks = 0;
 
     while(blocks < LOOK_BACK)
     {
       ChainHash h = prev;
       CoinbaseExtras extras = null;
-      if ((!prev_map.containsKey(h)) || (!extra_map.containsKey(h)))
+      Block blk = blockingStub.getBlock(RequestBlock.newBuilder().setBlockHash(h.getBytes()).build());
+      extras = TransactionUtil.getInner(blk.getTransactions(0)).getCoinbaseExtras();
+      if (remark.equals(HexUtil.getSafeString(extras.getRemarks()))) 
       {
-        logger.log(Level.FINE, "Fetching block for vote: " + h);
-        Block blk = shackleton.getStub().getBlock(RequestBlock.newBuilder().setBlockHash(h.getBytes()).build());
-
-        extras = TransactionUtil.getInner(blk.getTransactions(0)).getCoinbaseExtras();
-
-        prev = new ChainHash(blk.getHeader().getPrevBlockHash());
-        prev_map.put(h, prev);
-        extra_map.put(h, extras);
+        blockfound.put("block No.", blk.getHeader().getBlockHeight());
       }
-      else
-      {
-        extras = extra_map.get(h);
-        prev = prev_map.get(h);
-      }
-      
-      updateVoteMap(vote_map, extras);
-      String remark = HexUtil.getSafeString(extras.getRemarks());
-      if (!pool_count.containsKey(remark))
-      {
-        pool_count.put(remark, 0);
-      }
-      pool_count.put(remark, pool_count.get(remark) + 1);
-
-
       blocks++;
     }
-
   }
